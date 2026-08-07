@@ -123,6 +123,9 @@ export function EditExampleDialog(props: EditExampleDialogProps) {
           <div
             css={css`
               overflow-y: auto;
+              // keep trackpad overscroll from chaining to the dialog and
+              // dragging the header/footer with it
+              overscroll-behavior: contain;
               padding: var(--global-dimension-size-400);
               /* Make widths configurable */
               .dataset-picker {
