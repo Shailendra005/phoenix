@@ -270,6 +270,10 @@ export const EditCodeEvaluatorDialogContent = ({
   useEffect(() => {
     sandboxConfigIndexRef.current = sandboxConfigIndex;
   }, [sandboxConfigIndex]);
+  const sandboxConfigsRef = useRef(sandboxConfigs);
+  useEffect(() => {
+    sandboxConfigsRef.current = sandboxConfigs;
+  }, [sandboxConfigs]);
 
   const draftHostRef = useRef<CodeEvaluatorDraftHost | null>(null);
   const isDraftMounted = useCallback(() => draftHostRef.current != null, []);
@@ -298,6 +302,12 @@ export const EditCodeEvaluatorDialogContent = ({
         inputMapping: state.evaluator.inputMapping,
         testPayload: state.evaluatorMappingSource,
         outputConfigs: toOutputConfigDrafts(state.outputConfigs),
+        availableSandboxConfigs: sandboxConfigsRef.current.map((config) => ({
+          id: config.id,
+          name: config.name,
+          language: config.language,
+          backendType: config.backendType,
+        })),
       };
     };
 
