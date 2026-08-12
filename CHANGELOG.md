@@ -1,5 +1,17 @@
 # Changelog
 
+## [20.1.1](https://github.com/Arize-ai/phoenix/compare/arize-phoenix-v20.1.0...arize-phoenix-v20.1.1) (2026-08-12)
+
+
+### Bug Fixes
+
+* **cost:** update built-in model token prices ([#15390](https://github.com/Arize-ai/phoenix/issues/15390)) ([36d02ab](https://github.com/Arize-ai/phoenix/commit/36d02ab728b6275fcc4bda36f73e36a78e991a2a))
+
+
+### Documentation
+
+* **filters:** add span & session filter expressions reference ([#15189](https://github.com/Arize-ai/phoenix/issues/15189)) ([876c5a0](https://github.com/Arize-ai/phoenix/commit/876c5a08824f5ca65b5a1c5534158acbac3b1ac4))
+
 ## [20.1.0](https://github.com/Arize-ai/phoenix/compare/arize-phoenix-v20.0.0...arize-phoenix-v20.1.0) (2026-08-12)
 
 
