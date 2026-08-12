@@ -3,6 +3,10 @@ import { useMemo } from "react";
 import type { PendingDatasetWrite } from "@phoenix/agent/shared/pendingDatasetWrite";
 import type { PendingAnnotationConfigWrite } from "@phoenix/agent/tools/annotationConfig";
 import {
+  type PendingBatchSpanAnnotate,
+  toAnnotationOutput,
+} from "@phoenix/agent/tools/batchSpanAnnotate";
+import {
   codeEvaluatorDraftFileName,
   codeEvaluatorDraftSnapshotToText,
   type PendingCodeEvaluatorEdit,
@@ -152,6 +156,9 @@ function useScriptChildApprovals(toolCallId: string): ScriptChildApproval[] {
   );
   const patchExperiments = useAgentContext(
     (state) => state.pendingPatchExperimentsByToolCallId
+  );
+  const batchSpanAnnotates = useAgentContext(
+    (state) => state.pendingBatchSpanAnnotatesByToolCallId
   );
 
   return useMemo(
@@ -331,6 +338,27 @@ function useScriptChildApprovals(toolCallId: string): ScriptChildApproval[] {
           reject: pending.reject,
         }),
       }),
+      ...collectChildApprovals<PendingBatchSpanAnnotate>({
+        record: batchSpanAnnotates,
+        childKeyPrefix,
+        toApproval: (pending, key) => ({
+          key,
+          preview: {
+            title:
+              pending.annotations.length === 1
+                ? "Annotate span"
+                : `Annotate spans (${pending.annotations.length} annotations)`,
+            body: {
+              kind: "json",
+              payload: {
+                annotations: pending.annotations.map(toAnnotationOutput),
+              },
+            },
+          },
+          accept: pending.accept,
+          reject: pending.reject,
+        }),
+      }),
     ],
     [
       childKeyPrefix,
@@ -344,6 +372,7 @@ function useScriptChildApprovals(toolCallId: string): ScriptChildApproval[] {
       datasetWrites,
       annotationConfigWrites,
       patchExperiments,
+      batchSpanAnnotates,
     ]
   );
 }
