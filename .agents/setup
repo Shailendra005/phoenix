@@ -66,10 +66,10 @@ echo "==> Installing Python dependencies"
 uv sync --frozen --python 3.10
 uv tool install tox --with tox-uv
 
-echo "==> Installing frontend dependencies"
-pnpm --dir app install --frozen-lockfile
-
-echo "==> Installing TypeScript package dependencies"
+echo "==> Installing JavaScript workspace dependencies (packages + app)"
 pnpm --dir js install --frozen-lockfile
+
+echo "==> Building workspace dependencies of the app"
+pnpm --dir js/app run build:deps
 
 echo "==> Phoenix orb setup complete"
