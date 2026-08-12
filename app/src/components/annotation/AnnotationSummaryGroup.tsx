@@ -1,18 +1,18 @@
 import type { ReactNode } from "react";
 import { graphql, useFragment } from "react-relay";
 
-import type { SpanAnnotationSummaryGroup$key } from "@phoenix/components/annotation/__generated__/SpanAnnotationSummaryGroup.graphql";
+import { Flex } from "@phoenix/components";
+import type { AnnotationSummaryGroup$key } from "@phoenix/components/annotation/__generated__/AnnotationSummaryGroup.graphql";
 import { AnnotationSummaryTokens } from "@phoenix/components/annotation/AnnotationSummaryTokens";
+import { Divider } from "@phoenix/components/core/layout";
 
 import { hasAnnotationValue } from "./annotationUtils";
 import type { AnnotationOptimizationConfig } from "./optimizationUtils";
 
-const useSpanAnnotationSummaryGroup = (
-  span: SpanAnnotationSummaryGroup$key
-) => {
-  const data = useFragment<SpanAnnotationSummaryGroup$key>(
+const useAnnotationSummaryGroup = (span: AnnotationSummaryGroup$key) => {
+  const data = useFragment<AnnotationSummaryGroup$key>(
     graphql`
-      fragment SpanAnnotationSummaryGroup on Span {
+      fragment AnnotationSummaryGroup on Span {
         spanAnnotations {
           id
           name
@@ -21,6 +21,7 @@ const useSpanAnnotationSummaryGroup = (
           explanation
           annotatorKind
           createdAt
+          updatedAt
           user {
             username
             profilePictureUrl
@@ -74,21 +75,41 @@ const useSpanAnnotationSummaryGroup = (
   };
 };
 
-type SpanAnnotationSummaryGroupProps = {
-  span: SpanAnnotationSummaryGroup$key;
+type AnnotationSummaryGroupProps = {
+  span: AnnotationSummaryGroup$key;
   annotationConfigsByName: ReadonlyMap<string, AnnotationOptimizationConfig>;
   showFilterActions?: boolean;
   renderEmptyState?: () => ReactNode;
 };
 
-export const SpanAnnotationSummaryGroupTokens = ({
+/**
+ * Lays out annotation summary stacks as peer columns alongside other header
+ * metrics. The group owns its optional leading divider so empty groups do not
+ * leave a dangling separator behind.
+ */
+export function AnnotationSummaryGroupStacksRow({
+  leadingDivider = false,
+  children,
+}: {
+  leadingDivider?: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <Flex direction="row" gap="size-400" alignItems="stretch" flex="none">
+      {leadingDivider ? <Divider orientation="vertical" /> : null}
+      {children}
+    </Flex>
+  );
+}
+
+export const AnnotationSummaryGroupTokens = ({
   span,
   annotationConfigsByName,
   showFilterActions = false,
   renderEmptyState,
-}: SpanAnnotationSummaryGroupProps) => {
+}: AnnotationSummaryGroupProps) => {
   const { sortedSummariesByName, annotationsByName } =
-    useSpanAnnotationSummaryGroup(span);
+    useAnnotationSummaryGroup(span);
 
   // A summary of explanation-only annotations has no label or score to render
   // a token from, so counting it would leave a blank run of tokens.

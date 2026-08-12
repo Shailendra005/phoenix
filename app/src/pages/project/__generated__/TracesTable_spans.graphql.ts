@@ -1,5 +1,5 @@
 /**
- * @generated SignedSource<<69c4f078a7ffe8f2d6933d1d0412fcb3>>
+ * @generated SignedSource<<6d985fc693b9ccfcf6243024d057c4a1>>
  * @lightSyntaxTransform
  */
 
@@ -57,7 +57,7 @@ export type TracesTable_spans$data = {
                 readonly id: string;
                 readonly traceId: string;
               };
-              readonly " $fragmentSpreads": FragmentRefs<"SpanAnnotationSummaryGroup">;
+              readonly " $fragmentSpreads": FragmentRefs<"AnnotationSummaryGroup">;
             };
           }>;
         };
@@ -120,11 +120,11 @@ export type TracesTable_spans$data = {
           readonly userId: string | null;
           readonly " $fragmentSpreads": FragmentRefs<"TraceAnnotationSummaryGroup">;
         };
-        readonly " $fragmentSpreads": FragmentRefs<"SpanAnnotationSummaryGroup">;
+        readonly " $fragmentSpreads": FragmentRefs<"AnnotationSummaryGroup">;
       };
     }>;
   };
-  readonly " $fragmentSpreads": FragmentRefs<"ProjectAnnotationConfigFragment" | "SpanColumnSelector_annotations" | "SpanColumnSelector_traceAnnotations">;
+  readonly " $fragmentSpreads": FragmentRefs<"ProjectAnnotationMetricsConfigFragment" | "SpanColumnSelector_annotations" | "SpanColumnSelector_traceAnnotations">;
   readonly " $fragmentType": "TracesTable_spans";
 };
 export type TracesTable_spans$key = {
@@ -311,7 +311,7 @@ v16 = {
 v17 = {
   "args": null,
   "kind": "FragmentSpread",
-  "name": "SpanAnnotationSummaryGroup"
+  "name": "AnnotationSummaryGroup"
 },
 v18 = {
   "alias": null,
@@ -422,7 +422,7 @@ return {
     {
       "args": null,
       "kind": "FragmentSpread",
-      "name": "ProjectAnnotationConfigFragment"
+      "name": "ProjectAnnotationMetricsConfigFragment"
     },
     {
       "args": null,
@@ -741,6 +741,6 @@ return {
 };
 })();
 
-(node as any).hash = "e01713b91673e6c9a6f976169a6b515e";
+(node as any).hash = "d9abe9630695f3d227ce6737823170df";
 
 export default node;
