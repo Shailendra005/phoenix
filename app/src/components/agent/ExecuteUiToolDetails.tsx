@@ -12,6 +12,10 @@ import {
   llmEvaluatorDraftSnapshotToText,
   type PendingLlmEvaluatorEdit,
 } from "@phoenix/agent/tools/llmEvaluatorDraft";
+import {
+  patchExperimentDiffToText,
+  type PendingPatchExperiment,
+} from "@phoenix/agent/tools/patchExperiment";
 import type { PendingLoadDataset } from "@phoenix/agent/tools/playgroundLoadDataset";
 import type {
   PendingPromptEdit,
@@ -145,6 +149,9 @@ function useScriptChildApprovals(toolCallId: string): ScriptChildApproval[] {
   );
   const annotationConfigWrites = useAgentContext(
     (state) => state.pendingAnnotationConfigWritesByToolCallId
+  );
+  const patchExperiments = useAgentContext(
+    (state) => state.pendingPatchExperimentsByToolCallId
   );
 
   return useMemo(
@@ -306,6 +313,24 @@ function useScriptChildApprovals(toolCallId: string): ScriptChildApproval[] {
           reject: pending.reject,
         }),
       }),
+      ...collectChildApprovals<PendingPatchExperiment>({
+        record: patchExperiments,
+        childKeyPrefix,
+        toApproval: (pending, key) => ({
+          key,
+          preview: {
+            title: `Edit experiment "${pending.experimentName}"`,
+            body: {
+              kind: "diff",
+              fileName: `experiment-${pending.experimentName}.txt`,
+              before: patchExperimentDiffToText(pending.diff, "previous"),
+              after: patchExperimentDiffToText(pending.diff, "next"),
+            },
+          },
+          accept: pending.accept,
+          reject: pending.reject,
+        }),
+      }),
     ],
     [
       childKeyPrefix,
@@ -318,6 +343,7 @@ function useScriptChildApprovals(toolCallId: string): ScriptChildApproval[] {
       loadDatasets,
       datasetWrites,
       annotationConfigWrites,
+      patchExperiments,
     ]
   );
 }
