@@ -1,7 +1,7 @@
 import type { PendingDatasetWrite } from "@phoenix/agent/shared/pendingDatasetWrite";
 import { assertUnreachable } from "@phoenix/typeUtils";
 
-import { ApprovalCard } from "./ApprovalCard";
+import { ApprovalCard, type ApprovalPreview } from "./ApprovalCard";
 
 type PreviewDescriptor = {
   /** Short action label shown at the top of the card. */
@@ -145,6 +145,18 @@ function describePreview(pending: PendingDatasetWrite): PreviewDescriptor {
 }
 
 /**
+ * Normalize a pending dataset write to the shared {@link ApprovalPreview},
+ * for both the standalone-tool card below and the script-child approval
+ * cards `ExecuteUiToolDetails` renders for `ui.dataset.*` operations.
+ */
+export function datasetWriteApprovalPreview(
+  pending: PendingDatasetWrite
+): ApprovalPreview {
+  const { label, payload, note } = describePreview(pending);
+  return { title: label, danger: note, body: { kind: "json", payload } };
+}
+
+/**
  * Inline Accept/Reject card for a dataset write awaiting approval in manual
  * edit mode. Shared by every dataset write tool's details.
  */
@@ -153,10 +165,9 @@ export function DatasetWriteApprovalCard({
 }: {
   pending: PendingDatasetWrite;
 }) {
-  const { label, payload, note } = describePreview(pending);
   return (
     <ApprovalCard
-      preview={{ title: label, danger: note, body: { kind: "json", payload } }}
+      preview={datasetWriteApprovalPreview(pending)}
       onAccept={() => void pending.accept?.()}
       onReject={() => void pending.reject?.()}
       isDisabled={!(pending.accept && pending.reject)}

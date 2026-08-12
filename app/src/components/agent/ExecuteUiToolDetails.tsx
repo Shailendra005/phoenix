@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import type { PendingDatasetWrite } from "@phoenix/agent/shared/pendingDatasetWrite";
 import {
   codeEvaluatorDraftFileName,
   codeEvaluatorDraftSnapshotToText,
@@ -24,6 +25,7 @@ import type { PendingSavePrompt } from "@phoenix/agent/tools/playgroundSavePromp
 import { useAgentContext } from "@phoenix/contexts/AgentContext";
 
 import { ApprovalCard, type ApprovalPreview } from "./ApprovalCard";
+import { datasetWriteApprovalPreview } from "./DatasetWriteApprovalCard";
 import { LazyToolPartFileView } from "./LazyToolPartPierreViews";
 import {
   ToolPartCodeBlock,
@@ -135,6 +137,9 @@ function useScriptChildApprovals(toolCallId: string): ScriptChildApproval[] {
   );
   const loadDatasets = useAgentContext(
     (state) => state.pendingLoadDatasetsByToolCallId
+  );
+  const datasetWrites = useAgentContext(
+    (state) => state.pendingDatasetWritesByToolCallId
   );
 
   return useMemo(
@@ -276,6 +281,16 @@ function useScriptChildApprovals(toolCallId: string): ScriptChildApproval[] {
           reject: pending.reject,
         }),
       }),
+      ...collectChildApprovals<PendingDatasetWrite>({
+        record: datasetWrites,
+        childKeyPrefix,
+        toApproval: (pending, key) => ({
+          key,
+          preview: datasetWriteApprovalPreview(pending),
+          accept: pending.accept,
+          reject: pending.reject,
+        }),
+      }),
     ],
     [
       childKeyPrefix,
@@ -286,6 +301,7 @@ function useScriptChildApprovals(toolCallId: string): ScriptChildApproval[] {
       codeEvaluatorEdits,
       llmEvaluatorEdits,
       loadDatasets,
+      datasetWrites,
     ]
   );
 }
